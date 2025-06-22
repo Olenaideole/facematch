@@ -5,8 +5,7 @@ channel = "stable-24_05"
 packages = ["abseil-cpp", "freetype", "glibcLocales", "gtest", "lcms2", "libGL", "libGLU", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "oneDNN", "openjpeg", "pkg-config", "re2", "tcl", "tk", "xsimd", "zlib"]
 
 [deployment]
-deploymentTarget = "static"
-publicDir = "facial"
+deploymentTarget = "container"
 
 [workflows]
 runButton = "Project"
