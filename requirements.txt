@@ -1,0 +1,15 @@
+onnxruntime
+onnx
+numpy
+pandas
+opencv-python
+pickle
+tqdm
+scikit-learn
+onnx
+onnxruntime
+scipy
+streamlit
+tqdm
+opencv-python
+scikit-learn

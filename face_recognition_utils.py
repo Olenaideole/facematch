@@ -10,6 +10,10 @@ from PIL import Image
 import time
 import io
 
+from utils import *
+from get_face_embeddings import process_image_embeding
+from scipy.spatial.distance import cosine
+
 def validate_image(image):
     """
     Validate uploaded image for face recognition processing.
@@ -74,17 +78,16 @@ def preprocess_image(image):
         
         # Convert to numpy array
         img_array = np.array(image)
-        
-        return img_array
+        faces = inference_yolo(img_array, threshold=0.4)
+        face = faces[0]
+        return img_array[face[1]:face[3], face[0]:face[2]]
         
     except Exception as e:
         raise Exception(f"Image preprocessing failed: {str(e)}")
 
 def detect_face(image_array):
     """
-    Detect face in the image array.
-    
-    PLACEHOLDER FUNCTION - Replace with your actual face detection model.
+    Detect face in the image array using YOLO face detector.
     
     Args:
         image_array (np.array): Preprocessed image array
@@ -92,21 +95,18 @@ def detect_face(image_array):
     Returns:
         tuple: (face_detected: bool, face_encoding: np.array or None)
     """
-    # PLACEHOLDER IMPLEMENTATION
-    # Replace this with your actual face detection and encoding logic
-    
     try:
-        # Simulate face detection processing time
-        time.sleep(0.1)
+        # Use YOLO face detection from utils
+        faces = inference_yolo(image_array, threshold=0.4)
         
-        # Placeholder: assume face is detected if image has reasonable dimensions
-        height, width = image_array.shape[:2]
-        face_detected = height > 100 and width > 100
-        
-        if face_detected:
-            # Placeholder: generate a random face encoding
-            # Replace with your actual face encoding extraction
-            face_encoding = np.random.rand(128)  # Common face encoding size
+        if len(faces) > 0:
+            # Face detected, extract encoding using your model
+            face = faces[0]  # Take the first detected face
+            # Crop the face region
+            face_crop = image_array[face[1]:face[3], face[0]:face[2]]
+            
+            # Get face encoding using your ONNX model
+            face_encoding = process_image_embeding(face_crop)
             return True, face_encoding
         else:
             return False, None
@@ -127,7 +127,8 @@ def calculate_distance(encoding1, encoding2):
     """
     try:
         # Calculate Euclidean distance
-        distance = np.linalg.norm(encoding1 - encoding2)
+        cosine_distance = 1 - cosine(encoding1, encoding2)
+        distance = cosine_distance
         return distance
         
     except Exception as e:
@@ -157,17 +158,17 @@ def calculate_face_distance(image1_array, image2_array):
         
         if not face_detected_2:
             raise Exception("No face detected in comparison image")
-        
+
         # Calculate distance between encodings
         distance = calculate_distance(encoding_1, encoding_2)
         
         # Determine match based on threshold
-        threshold = 0.6  # Adjust this threshold based on your model's performance
+        threshold = 0.5  # Adjust this threshold based on your model's performance
         is_match = distance < threshold
         
         # Calculate confidence (inverse relationship with distance)
         max_distance = 2.0  # Typical maximum distance for face encodings
-        confidence = max(0, 1 - (distance / max_distance))
+        confidence = max(0.0, 1.0 - (distance / max_distance))
         
         processing_time = time.time() - start_time
         

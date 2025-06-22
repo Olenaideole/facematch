@@ -50,7 +50,7 @@ with col1:
     if uploaded_file1 is not None:
         try:
             image1 = Image.open(uploaded_file1)
-            st.image(image1, caption="Reference Image", use_column_width=True)
+            st.image(image1, caption="Reference Image", use_container_width=True)
             
             # Validate image
             validation_result1 = validate_image(image1)
@@ -76,7 +76,7 @@ with col2:
     if uploaded_file2 is not None:
         try:
             image2 = Image.open(uploaded_file2)
-            st.image(image2, caption="Comparison Image", use_column_width=True)
+            st.image(image2, caption="Comparison Image", use_container_width=True)
             
             # Validate image
             validation_result2 = validate_image(image2)
