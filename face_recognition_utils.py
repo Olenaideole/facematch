@@ -126,9 +126,8 @@ def calculate_distance(encoding1, encoding2):
         float: Distance between encodings
     """
     try:
-        # Calculate Euclidean distance
-        cosine_distance = 1 - cosine(encoding1, encoding2)
-        distance = cosine_distance
+        # Calculate cosine distance (0 = identical, 1 = completely different)
+        distance = cosine(encoding1, encoding2)
         return distance
         
     except Exception as e:
@@ -162,7 +161,7 @@ def calculate_face_distance(image1_array, image2_array):
         # Calculate distance between encodings
         distance = calculate_distance(encoding_1, encoding_2)
         
-        # Determine match based on threshold
+        # Determine match based on threshold (for cosine distance, lower = more similar)
         threshold = 0.5  # Adjust this threshold based on your model's performance
         is_match = distance < threshold
         
