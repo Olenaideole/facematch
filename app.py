@@ -150,10 +150,11 @@ if st.session_state.comparison_result is not None:
     col_dist, col_sim, col_status = st.columns(3)
     
     with col_dist:
+        similarity_score = 1 - result['distance']  # Convert distance to similarity
         st.metric(
-            label="Face Distance",
-            value=f"{result['distance']:.4f}",
-            help="Lower values indicate higher similarity"
+            label="Face Similarity",
+            value=f"{similarity_score:.4f}",
+            help="Higher values indicate greater similarity"
         )
     
     with col_sim:
@@ -193,9 +194,11 @@ if st.session_state.comparison_result is not None:
     
     # Technical details (expandable)
     with st.expander("🔧 Technical Details"):
+        similarity_value = 1 - result['distance']
         st.json({
-            "distance_value": result['distance'],
+            "similarity_score": f"{similarity_value:.4f}",
             "similarity_percentage": f"{similarity_percentage:.2f}%",
+            "distance_value": result['distance'],
             "threshold": result['threshold'],
             "confidence": result['confidence'],
             "processing_time_ms": f"{result['processing_time'] * 1000:.0f}",
