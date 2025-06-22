@@ -3,7 +3,6 @@ onnx
 numpy
 pandas
 opencv-python
-pickle
 tqdm
 scikit-learn
 onnx
